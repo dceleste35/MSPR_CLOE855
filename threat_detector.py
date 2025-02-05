@@ -29,7 +29,7 @@ class ThreatDetector:
 
     def check_login_attempt(self, username, ip_address):
         failures = self.get_recent_failures(ip_address)
-
+        print(f"Failures: {failures}")
         if failures >= self.thresholds['login_attempts']:
             self.log_threat(
                 'BRUTE_FORCE',
