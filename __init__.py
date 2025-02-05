@@ -47,9 +47,9 @@ def authentification():
             return redirect(url_for('lecture'))
         else:
             log_connection_attempt(request.form['username'], False)
-            return render_template('formulaire_authentification.html', error=True)
+            return render_template('formulaire_authentification.html', error="Nom d'utilisateur ou mot de passe incorrect")
 
-    return render_template('formulaire_authentification.html', error=False)
+    return render_template('formulaire_authentification.html', error=None)
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
