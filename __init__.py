@@ -3,8 +3,8 @@ from flask import render_template
 from flask import json
 from urllib.request import urlopen
 from werkzeug.utils import secure_filename
-import sqlite3
 from threat_detector import ThreatDetector
+import sqlite3
 
 threat_detector = ThreatDetector()
 
