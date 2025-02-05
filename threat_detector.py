@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import json
+import sqlite3
 
 class ThreatDetector:
     def __init__(self, db_path='database.db'):
