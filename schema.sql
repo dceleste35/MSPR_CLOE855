@@ -6,3 +6,13 @@ CREATE TABLE clients (
     prenom TEXT NOT NULL,
     adresse TEXT NOT NULL
 );
+
+DROP TABLE IF EXISTS connection_logs;
+CREATE TABLE IF NOT EXISTS connection_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    username TEXT NOT NULL,
+    ip_address TEXT,
+    success BOOLEAN,
+    user_agent TEXT
+);

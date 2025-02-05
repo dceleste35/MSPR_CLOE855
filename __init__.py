@@ -5,7 +5,7 @@ from urllib.request import urlopen
 from werkzeug.utils import secure_filename
 import sqlite3
 
-app = Flask(__name__)                                                                                                                  
+app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
@@ -29,9 +29,9 @@ def lecture():
 def authentification():
     if request.method == 'POST':
         # Vérifier les identifiants
-        if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
+        if request.form['username'] == 'admin' and request.form['password'] == 'password':
             session['authentifie'] = True
-            # Rediriger vers la route lecture après une authentification réussie
+            log_connection_attempt(username, success)
             return redirect(url_for('lecture'))
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects
@@ -76,6 +76,39 @@ def enregistrer_client():
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
-                                                                                                                                       
+
+@app.route('/admin/logs')
+def view_logs():
+    if not est_authentifie() or session.get('username') != 'admin':
+        return redirect(url_for('authentification'))
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT timestamp, username, ip_address, success, user_agent
+        FROM connection_logs
+        ORDER BY timestamp DESC
+    ''')
+    logs = cursor.fetchall()
+    conn.close()
+
+    return render_template('view_logs.html', logs=logs)
+
+def log_connection_attempt(username, success):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Récupérer les informations de la requête
+    ip_address = request.remote_addr
+    user_agent = request.user_agent.string
+
+    cursor.execute('''
+        INSERT INTO connection_logs (username, ip_address, success, user_agent)
+        VALUES (?, ?, ?, ?)
+    ''', (username, ip_address, success, user_agent))
+
+    conn.commit()
+    conn.close()
+
 if __name__ == "__main__":
   app.run(debug=True)
