@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename
 import sqlite3
 from threat_detector import ThreatDetector
 
+threat_detector = ThreatDetector()
+
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
