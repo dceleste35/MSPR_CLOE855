@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import sqlite3
 from threat_detector import ThreatDetector
 
-threat_detector = ThreatDetector()
+threat_detector = ThreatDetector():38
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
@@ -35,7 +35,7 @@ def authentification():
         ip_address = request.remote_addr
         username = request.form['username']
 
-        if not threat_detector.check_input(username, ip_address) or not threat_detector.check_input(password, ip_address):
+        if not threat_detector.check_input(username, ip_address) or not threat_detector.check_input(request.form['password'], ip_address):
             return render_template('formulaire_authentification.html', error="Tentative suspecte détectée")
 
         if not threat_detector.check_login_attempt(username, ip_address):
