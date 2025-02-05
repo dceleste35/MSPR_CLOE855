@@ -39,6 +39,7 @@ def authentification():
             return render_template('formulaire_authentification.html', error="Tentative suspecte détectée")
 
         if not threat_detector.check_login_attempt(username, ip_address):
+            print("Trop de tentatives, réessayez plus tard")
             return render_template('formulaire_authentification.html', error="Trop de tentatives, réessayez plus tard")
 
         if username == 'admin' and request.form['password'] == 'password':
