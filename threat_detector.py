@@ -21,8 +21,7 @@ class ThreatDetector:
             SELECT COUNT(*) FROM connection_logs
             WHERE ip_address = ?
             AND success = 0
-            AND datetime(timestamp) > datetime(?)
-        ''', (ip_address, timeframe))
+        ''', (ip_address,))
 
         count = cursor.fetchone()[0]
         conn.close()
