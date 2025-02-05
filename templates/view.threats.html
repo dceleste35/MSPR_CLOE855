@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Menaces de sécurité détectées</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; border: 1px solid #ddd; }
+        .HIGH { color: red; font-weight: bold; }
+        .MEDIUM { color: orange; }
+        .LOW { color: yellow; }
+    </style>
+</head>
+<body>
+    <h1>Menaces de sécurité détectées</h1>
+    <table>
+        <tr>
+            <th>Date/Heure</th>
+            <th>Type</th>
+            <th>IP</th>
+            <th>Détails</th>
+            <th>Sévérité</th>
+            <th>Statut</th>
+        </tr>
+        {% for threat in threats %}
+        <tr>
+            <td>{{ threat[0] }}</td>
+            <td>{{ threat[1] }}</td>
+            <td>{{ threat[2] }}</td>
+            <td>{{ threat[3] }}</td>
+            <td class="{{ threat[4] }}">{{ threat[4] }}</td>
+            <td>{{ threat[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

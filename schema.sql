@@ -16,3 +16,14 @@ CREATE TABLE IF NOT EXISTS connection_logs (
     success BOOLEAN,
     user_agent TEXT
 );
+
+DROP TABLE IF EXISTS security_threats;
+CREATE TABLE IF NOT EXISTS security_threats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    threat_type TEXT NOT NULL,
+    ip_address TEXT,
+    details TEXT,
+    severity TEXT,
+    status TEXT DEFAULT 'NEW'
+);

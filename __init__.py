@@ -5,6 +5,8 @@ from urllib.request import urlopen
 from werkzeug.utils import secure_filename
 import sqlite3
 
+threat_detector = ThreatDetector()
+
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
@@ -28,10 +30,19 @@ def lecture():
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     if request.method == 'POST':
-        # Vérifier les identifiants
-        if request.form['username'] == 'admin' and request.form['password'] == 'password':
+
+        ip_address = request.remote_addr
+        username = request.form['username']
+
+        if not threat_detector.check_input(username, ip_address) or not threat_detector.check_input(password, ip_address):
+            return render_template('formulaire_authentification.html', error="Tentative suspecte détectée")
+
+         if not threat_detector.check_login_attempt(username, ip_address):
+            return render_template('formulaire_authentification.html', error="Trop de tentatives, réessayez plus tard")
+
+        if username == 'admin' and request.form['password'] == 'password':
             session['authentifie'] = True
-            log_connection_attempt(request.form['username'], True)
+            log_connection_attempt(username, True)
             return redirect(url_for('lecture'))
         else:
             log_connection_attempt(request.form['username'], False)
@@ -93,6 +104,23 @@ def view_logs():
     conn.close()
 
     return render_template('view_logs.html', logs=logs)
+
+@app.route('/admin/security')
+def view_threats():
+    if not est_authentifie():
+        return redirect(url_for('authentification'))
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT timestamp, threat_type, ip_address, details, severity, status
+        FROM security_threats
+        ORDER BY timestamp DESC
+    ''')
+    threats = cursor.fetchall()
+    conn.close()
+
+    return render_template('view_threats.html', threats=threats)
 
 def log_connection_attempt(username, success):
     conn = sqlite3.connect('database.db')
