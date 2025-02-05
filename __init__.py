@@ -34,7 +34,7 @@ def authentification():
             log_connection_attempt(request.form['username'], True)
             return redirect(url_for('lecture'))
         else:
-            # Afficher un message d'erreur si les identifiants sont incorrects
+            log_connection_attempt(request.form['username'], False)
             return render_template('formulaire_authentification.html', error=True)
 
     return render_template('formulaire_authentification.html', error=False)
