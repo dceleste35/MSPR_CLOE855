@@ -79,7 +79,7 @@ def enregistrer_client():
 
 @app.route('/admin/logs')
 def view_logs():
-    if not est_authentifie() or session.get('username') != 'admin':
+    if not est_authentifie():
         return redirect(url_for('authentification'))
 
     conn = sqlite3.connect('database.db')
