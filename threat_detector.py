@@ -17,13 +17,12 @@ class ThreatDetector:
 
         timeframe = (datetime.now() - timedelta(minutes=minutes)).strftime('%Y-%m-%d %H:%M:%S')
 
-        print(timeframe, ip_address)
-
         cursor.execute('''
             SELECT COUNT(*) FROM connection_logs
             WHERE ip_address = ?
             AND success = 0
-        ''', (ip_address,))
+            AND datetime(timestamp) > datetime(?)
+        ''', (ip_address, timeframe))
 
         count = cursor.fetchone()[0]
         conn.close()
@@ -31,7 +30,7 @@ class ThreatDetector:
 
     def check_login_attempt(self, username, ip_address):
         failures = self.get_recent_failures(ip_address)
-        print(failures)
+
         if failures >= self.thresholds['login_attempts']:
             self.log_threat(
                 'BRUTE_FORCE',
