@@ -31,7 +31,7 @@ def authentification():
         # Vérifier les identifiants
         if request.form['username'] == 'admin' and request.form['password'] == 'password':
             session['authentifie'] = True
-            log_connection_attempt(username, true)
+            log_connection_attempt(request.form['username'], true)
             return redirect(url_for('lecture'))
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects
