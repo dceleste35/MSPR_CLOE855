@@ -14,13 +14,14 @@ class ThreatDetector:
     def get_recent_failures(self, ip_address, minutes=5):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        timeframe = datetime.now() - timedelta(minutes=minutes)
+
+        timeframe = (datetime.now() - timedelta(minutes=minutes)).strftime('%Y-%m-%d %H:%M:%S')
 
         cursor.execute('''
             SELECT COUNT(*) FROM connection_logs
             WHERE ip_address = ?
             AND success = 0
-            AND timestamp > ?
+            AND datetime(timestamp) > datetime(?)
         ''', (ip_address, timeframe))
 
         count = cursor.fetchone()[0]
@@ -29,7 +30,6 @@ class ThreatDetector:
 
     def check_login_attempt(self, username, ip_address):
         failures = self.get_recent_failures(ip_address)
-        print(f"Failures: {failures}")
         if failures >= self.thresholds['login_attempts']:
             self.log_threat(
                 'BRUTE_FORCE',
